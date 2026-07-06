@@ -55,3 +55,23 @@ jobs:
           # Tag and push as latest
           docker tag ${{ secrets.DOCKER_USERNAME }}/sock-shop-frontend:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/sock-shop-frontend:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/sock-shop-frontend:latest
+
+      - name: Deploy to Kubernetes Cluster
+        if: success()
+        uses: azure/k8s-set-context@v3
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+
+      - name: Apply Kubernetes Manifests
+        if: success()
+        run: |
+          kubectl apply -f kubernetes/configmaps/
+          kubectl apply -f kubernetes/deployments/
+          kubectl apply -f kubernetes/services/
+          kubectl apply -f kubernetes/ingress/
+          
+          # Force a rollout of the new image
+          kubectl set image deployment/front-end front-end=${{ secrets.DOCKER_USERNAME }}/sock-shop-frontend:${{ github.sha }} -n sock-shop
+          kubectl rollout status deployment/front-end -n sock-shop
+

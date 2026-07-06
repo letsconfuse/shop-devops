@@ -29,3 +29,17 @@ This document records the reasoning behind technical choices made throughout the
 
 ### 3. Secrets Management
 - **Decision**: Hardcoded no credentials. Docker Hub credentials will be injected dynamically via GitHub Secrets (`DOCKER_USERNAME` and `DOCKER_PASSWORD`).
+
+## Phase 3: Kubernetes Deployment
+
+### 1. Separation of Concerns in Manifests
+- **Decision**: Split configuration logically across `deployments/`, `services/`, `ingress/`, and `configmaps/`.
+- **Why**: This mimics enterprise environments where different teams or pipelines might manage ingress vs. core application deployments.
+
+### 2. Rollout Strategy
+- **Decision**: Defined `maxSurge: 1` and `maxUnavailable: 0` in the `front-end` deployment's RollingUpdate strategy.
+- **Why**: Ensures zero downtime during deployments. Kubernetes will spin up a new pod with the latest image before terminating the old one.
+
+### 3. GitOps-Style Pipeline Integration
+- **Decision**: The CD pipeline uses `kubectl apply -f` on the manifest directories, followed by a `kubectl set image` to force the newly built image SHA.
+- **Why**: Guarantees that what is defined in the repository exactly matches what is running in the cluster.
