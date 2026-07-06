@@ -58,8 +58,13 @@ The project utilizes GitHub Actions for continuous integration and continuous de
    - Upon successful testing, securely authenticates with Docker Hub using GitHub Secrets.
    - Pushes the new Docker image tagged with the Git SHA and `latest`.
 
-## Monitoring
-*(Grafana screenshots and metrics will be added in Phase 5)*
+## 📊 Monitoring & Observability
+
+The application is fully monitored using the Prometheus and Grafana stack.
+- **Prometheus**: Scrapes metrics from all 13+ microservices every 15 seconds. It includes active alerting rules (`FrontEndDown`, `HighErrorRate`) via PromQL.
+- **Grafana**: Automatically provisioned with Prometheus as the default data source. A pre-built "Sock Shop Observability Dashboard" is loaded on startup, displaying realtime container health, uptime, and HTTP error rates. 
+
+When running locally via `docker-compose`, access Grafana at `http://localhost:3000`.
 
 ## What I Learned
 *(Ongoing reflections and learning outcomes will be documented here)*

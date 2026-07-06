@@ -125,6 +125,29 @@ services:
     networks:
       - sock-shop
 
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    hostname: prometheus
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - ../monitoring/prometheus:/etc/prometheus
+    networks:
+      - sock-shop
+
+  grafana:
+    image: grafana/grafana:10.1.0
+    hostname: grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ../monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+    networks:
+      - sock-shop
+
 networks:
   sock-shop:
     driver: bridge

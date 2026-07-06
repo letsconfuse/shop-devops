@@ -57,3 +57,13 @@ This document records the reasoning behind technical choices made throughout the
 ### 3. CI/CD Pipeline for Infrastructure
 - **Decision**: Created a dedicated `.github/workflows/terraform.yml`.
 - **Why**: Infrastructure changes should go through the same code review process as application code. The pipeline runs `terraform plan` on PRs (to review changes) and `terraform apply` only when merged to `main`.
+
+## Phase 5: Observability (Prometheus & Grafana)
+
+### 1. Unified Local and Cloud Monitoring
+- **Decision**: Wired Prometheus and Grafana directly into the `docker-compose.yml` to allow for local debugging of alerts, and provisioned a dashboard via JSON.
+- **Why**: Observability should not be an afterthought that only exists in production. By provisioning the data sources and dashboards natively, any developer can spin up the stack and immediately see metrics at `localhost:3000`.
+
+### 2. Alerting Philosophy
+- **Decision**: Wrote explicit PromQL rules (`alert.rules`) for critical failures: `FrontEndDown` and `HighErrorRate` (5xx errors > 5%).
+- **Why**: Demonstrates a proactive SRE mindset. We don't just collect metrics; we actively trigger alerts when service level indicators (SLIs) degrade.
