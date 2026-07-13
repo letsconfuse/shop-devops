@@ -1,3 +1,4 @@
+---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -6,8 +7,8 @@ metadata:
 spec:
   podSelector: {}
   policyTypes:
-  - Ingress
-  - Egress
+    - Ingress
+    - Egress
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -19,27 +20,27 @@ spec:
     matchLabels:
       component: front-end
   policyTypes:
-  - Ingress
-  - Egress
+    - Ingress
+    - Egress
   ingress:
-  - from:
-    - podSelector: {}
-    ports:
-    - protocol: TCP
-      port: 8079
+    - from:
+        - podSelector: {}
+      ports:
+        - protocol: TCP
+          port: 8079
   egress:
-  - to:
-    - podSelector: {}
-    ports:
-    - protocol: TCP
-      port: 80
-  - to:
-    - podSelector:
-        matchLabels:
-          k8s-app: kube-dns
-    ports:
-    - protocol: UDP
-      port: 53
+    - to:
+        - podSelector: {}
+      ports:
+        - protocol: TCP
+          port: 80
+    - to:
+        - podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -49,18 +50,18 @@ metadata:
 spec:
   podSelector:
     matchExpressions:
-    - key: component
-      operator: In
-      values:
-      - catalogue-db
-      - carts-db
-      - orders-db
-      - user-db
+      - key: component
+        operator: In
+        values:
+          - catalogue-db
+          - carts-db
+          - orders-db
+          - user-db
   policyTypes:
-  - Ingress
+    - Ingress
   ingress:
-  - from:
-    - podSelector: {}
+    - from:
+        - podSelector: {}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -72,12 +73,12 @@ spec:
     matchLabels:
       component: rabbitmq
   policyTypes:
-  - Ingress
+    - Ingress
   ingress:
-  - from:
-    - podSelector: {}
-    ports:
-    - protocol: TCP
-      port: 5672
-    - protocol: TCP
-      port: 15672
+    - from:
+        - podSelector: {}
+      ports:
+        - protocol: TCP
+          port: 5672
+        - protocol: TCP
+          port: 15672

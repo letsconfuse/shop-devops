@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -51,52 +52,52 @@ spec:
                         - front-end
                 topologyKey: kubernetes.io/hostname
       containers:
-      - name: front-end
-        image: weaveworksdemos/front-end:0.3.12
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 8079
-          name: http
-          protocol: TCP
-        env:
-        - name: NODE_ENV
-          valueFrom:
-            configMapKeyRef:
-              name: app-config
-              key: node-env
-        resources:
-          requests:
-            cpu: 100m
-            memory: 128Mi
-          limits:
-            cpu: 500m
-            memory: 512Mi
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 8079
-            scheme: HTTP
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 8079
-            scheme: HTTP
-          initialDelaySeconds: 5
-          periodSeconds: 5
-          timeoutSeconds: 3
-          failureThreshold: 2
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 1000
-          readOnlyRootFilesystem: false
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-              - ALL
+        - name: front-end
+          image: weaveworksdemos/front-end:0.3.12
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8079
+              name: http
+              protocol: TCP
+          env:
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: node-env
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8079
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8079
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 2
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -115,30 +116,30 @@ spec:
         component: catalogue
     spec:
       containers:
-      - name: catalogue
-        image: weaveworksdemos/catalogue:0.3.5
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 80
-        resources:
-          requests:
-            cpu: 50m
-            memory: 64Mi
-          limits:
-            cpu: 250m
-            memory: 256Mi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 5
-          periodSeconds: 5
+        - name: catalogue
+          image: weaveworksdemos/catalogue:0.3.5
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -157,46 +158,46 @@ spec:
         component: catalogue-db
     spec:
       containers:
-      - name: catalogue-db
-        image: weaveworksdemos/catalogue-db:0.3.0
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 3306
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: db-secrets
-              key: mysql-root-password
-        - name: MYSQL_DATABASE
-          value: socks
-        resources:
-          requests:
-            cpu: 100m
-            memory: 256Mi
-          limits:
-            cpu: 500m
-            memory: 512Mi
-        livenessProbe:
-          exec:
-            command:
-              - mysqladmin
-              - ping
-              - -u
-              - root
-              - -p${MYSQL_ROOT_PASSWORD}
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          exec:
-            command:
-              - mysqladmin
-              - ping
-              - -u
-              - root
-              - -p${MYSQL_ROOT_PASSWORD}
-          initialDelaySeconds: 5
-          periodSeconds: 5
+        - name: catalogue-db
+          image: weaveworksdemos/catalogue-db:0.3.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: mysql-root-password
+            - name: MYSQL_DATABASE
+              value: socks
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+                - -u
+                - root
+                - -p${MYSQL_ROOT_PASSWORD}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+                - -u
+                - root
+                - -p${MYSQL_ROOT_PASSWORD}
+            initialDelaySeconds: 5
+            periodSeconds: 5
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -215,30 +216,30 @@ spec:
         component: carts
     spec:
       containers:
-      - name: carts
-        image: weaveworksdemos/carts:0.4.8
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 80
-        resources:
-          requests:
-            cpu: 50m
-            memory: 64Mi
-          limits:
-            cpu: 250m
-            memory: 256Mi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 5
-          periodSeconds: 5
+        - name: carts
+          image: weaveworksdemos/carts:0.4.8
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -257,18 +258,18 @@ spec:
         component: carts-db
     spec:
       containers:
-      - name: carts-db
-        image: mongo:4.2
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 27017
-        resources:
-          requests:
-            cpu: 50m
-            memory: 128Mi
-          limits:
-            cpu: 250m
-            memory: 256Mi
+        - name: carts-db
+          image: mongo:4.2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 27017
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -287,30 +288,30 @@ spec:
         component: orders
     spec:
       containers:
-      - name: orders
-        image: weaveworksdemos/orders:0.4.7
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 80
-        resources:
-          requests:
-            cpu: 50m
-            memory: 64Mi
-          limits:
-            cpu: 250m
-            memory: 256Mi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 5
-          periodSeconds: 5
+        - name: orders
+          image: weaveworksdemos/orders:0.4.7
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -329,18 +330,18 @@ spec:
         component: orders-db
     spec:
       containers:
-      - name: orders-db
-        image: mongo:4.2
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 27017
-        resources:
-          requests:
-            cpu: 50m
-            memory: 128Mi
-          limits:
-            cpu: 250m
-            memory: 256Mi
+        - name: orders-db
+          image: mongo:4.2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 27017
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -359,30 +360,30 @@ spec:
         component: payment
     spec:
       containers:
-      - name: payment
-        image: weaveworksdemos/payment:0.4.3
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 80
-        resources:
-          requests:
-            cpu: 50m
-            memory: 64Mi
-          limits:
-            cpu: 250m
-            memory: 256Mi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 5
-          periodSeconds: 5
+        - name: payment
+          image: weaveworksdemos/payment:0.4.3
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -401,30 +402,30 @@ spec:
         component: shipping
     spec:
       containers:
-      - name: shipping
-        image: weaveworksdemos/shipping:0.4.8
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 80
-        resources:
-          requests:
-            cpu: 50m
-            memory: 64Mi
-          limits:
-            cpu: 250m
-            memory: 256Mi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 5
-          periodSeconds: 5
+        - name: shipping
+          image: weaveworksdemos/shipping:0.4.8
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -443,30 +444,30 @@ spec:
         component: user
     spec:
       containers:
-      - name: user
-        image: weaveworksdemos/user:0.4.7
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 80
-        resources:
-          requests:
-            cpu: 50m
-            memory: 64Mi
-          limits:
-            cpu: 250m
-            memory: 256Mi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 5
-          periodSeconds: 5
+        - name: user
+          image: weaveworksdemos/user:0.4.7
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -485,18 +486,18 @@ spec:
         component: user-db
     spec:
       containers:
-      - name: user-db
-        image: weaveworksdemos/user-db:0.4.0
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 27017
-        resources:
-          requests:
-            cpu: 50m
-            memory: 128Mi
-          limits:
-            cpu: 250m
-            memory: 256Mi
+        - name: user-db
+          image: weaveworksdemos/user-db:0.4.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 27017
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -515,30 +516,30 @@ spec:
         component: queue-master
     spec:
       containers:
-      - name: queue-master
-        image: weaveworksdemos/queue-master:0.3.1
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 80
-        resources:
-          requests:
-            cpu: 50m
-            memory: 64Mi
-          limits:
-            cpu: 250m
-            memory: 256Mi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 5
-          periodSeconds: 5
+        - name: queue-master
+          image: weaveworksdemos/queue-master:0.3.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -557,16 +558,16 @@ spec:
         component: rabbitmq
     spec:
       containers:
-      - name: rabbitmq
-        image: rabbitmq:3.8-management
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 5672
-        - containerPort: 15672
-        resources:
-          requests:
-            cpu: 100m
-            memory: 128Mi
-          limits:
-            cpu: 500m
-            memory: 512Mi
+        - name: rabbitmq
+          image: rabbitmq:3.8-management
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5672
+            - containerPort: 15672
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
