@@ -17,10 +17,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
 
       - name: Install Helm
-        uses: azure/setup-helm@v5
+        uses: azure/setup-helm@v4
 
       - name: Add official OpenTelemetry chart repository
         run: |
@@ -35,10 +35,10 @@ jobs:
           helm template astronomy-shop opentelemetry-demo --namespace astronomy-shop --values platform/helm/values.yaml > rendered.yaml
 
       - name: Validate rendered Kubernetes resources
-        run: docker run --rm -v "$PWD:/work" garethr/kubeval:0.16.1 /work/rendered.yaml
+        run: kubectl apply --dry-run=client --validate=true -f rendered.yaml
 
       - name: Scan platform configuration
-        uses: aquasecurity/trivy-action@v0.36.0
+        uses: aquasecurity/trivy-action@0.32.0
         with:
           scan-type: config
           scan-ref: platform
