@@ -1,0 +1,74 @@
+---
+name: Repository Quality
+
+on:
+  pull_request:
+    branches:
+      - main
+
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Repository Quality Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+
+      - name: Install Python Tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install yamllint
+
+      - name: Install Markdownlint
+        run: |
+          npm install -g markdownlint-cli
+
+      - name: Install ShellCheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+
+      - name: Install actionlint
+        run: |
+          go install github.com/rhysd/actionlint/cmd/actionlint@latest
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+
+      - name: Run yamllint
+        run: |
+          yamllint .
+
+      - name: Run markdownlint
+        run: |
+          markdownlint .
+
+      - name: Run actionlint
+        run: |
+          actionlint
+
+      - name: Run ShellCheck
+        run: |
+          find . -type f -name "*.sh" -print0 | \
+          xargs -0 -r shellcheck
