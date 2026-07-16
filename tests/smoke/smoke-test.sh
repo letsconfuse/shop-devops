@@ -6,13 +6,13 @@ echo "Running smoke tests..."
 # Ensure we're in the right namespace
 NAMESPACE="astronomy-shop"
 
-# We will wait for the frontendproxy to be ready.
-echo "Waiting for frontendproxy deployment to be ready..."
-kubectl wait --for=condition=available --timeout=300s deployment/astronomy-shop-frontendproxy -n "$NAMESPACE" || kubectl wait --for=condition=available --timeout=300s deployment/frontendproxy -n "$NAMESPACE"
+# We will wait for the frontend-proxy to be ready.
+echo "Waiting for frontend-proxy deployment to be ready..."
+kubectl wait --for=condition=available --timeout=300s deployment/astronomy-shop-frontend-proxy -n "$NAMESPACE" || kubectl wait --for=condition=available --timeout=300s deployment/frontend-proxy -n "$NAMESPACE" || kubectl wait --for=condition=available --timeout=300s deployment/astronomy-shop-frontendproxy -n "$NAMESPACE"
 
 # Port forward in the background
-echo "Port-forwarding frontendproxy service..."
-(kubectl port-forward svc/astronomy-shop-frontendproxy 8080:8080 -n "$NAMESPACE" || kubectl port-forward svc/frontendproxy 8080:8080 -n "$NAMESPACE") &
+echo "Port-forwarding frontend-proxy service..."
+(kubectl port-forward svc/astronomy-shop-frontend-proxy 8080:8080 -n "$NAMESPACE" || kubectl port-forward svc/frontend-proxy 8080:8080 -n "$NAMESPACE" || kubectl port-forward svc/astronomy-shop-frontendproxy 8080:8080 -n "$NAMESPACE") &
 PORT_FORWARD_PID=$!
 
 # Give it a second to establish the connection
