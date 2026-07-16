@@ -1,0 +1,7 @@
+name: "Setup Kubectl"
+description: "Installs kubectl"
+runs:
+  using: "composite"
+  steps:
+    - name: Install kubectl
+      uses: azure/setup-kubectl@v4

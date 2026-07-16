@@ -1,0 +1,9 @@
+name: "Setup Kind"
+description: "Installs Kind"
+runs:
+  using: "composite"
+  steps:
+    - name: Install Kind
+      uses: helm/kind-action@v1.10.0
+      with:
+        install_only: true

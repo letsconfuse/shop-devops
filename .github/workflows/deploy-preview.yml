@@ -1,0 +1,51 @@
+---
+name: Deploy Preview & Smoke Test
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  ephemeral-deploy:
+    name: Ephemeral Deploy & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Kind
+        uses: ./.github/actions/setup-kind
+
+      - name: Setup Kubectl
+        uses: ./.github/actions/setup-kubectl
+
+      - name: Setup Helm
+        uses: ./.github/actions/setup-helm
+
+      - name: Create Kind Cluster
+        run: |
+          kind create cluster --config platform/kind/cluster.yaml --wait 120s
+          kubectl cluster-info
+
+      - name: Deploy Astronomy Shop
+        run: |
+          source platform/helm/versions.env
+          kubectl create namespace astronomy-shop
+          
+          helm upgrade --install astronomy-shop open-telemetry/opentelemetry-demo \
+            --version "$OTEL_DEMO_CHART_VERSION" \
+            --namespace astronomy-shop \
+            --values platform/helm/values.yaml
+
+      - name: Run Smoke Tests
+        run: |
+          chmod +x tests/smoke/smoke-test.sh
+          ./tests/smoke/smoke-test.sh
+
+      - name: Tear Down Cluster
+        if: always()
+        run: kind delete cluster --name astronomy-shop
