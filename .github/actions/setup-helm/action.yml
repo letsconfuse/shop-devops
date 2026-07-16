@@ -1,0 +1,13 @@
+name: "Setup Helm"
+description: "Installs Helm and adds necessary repositories"
+runs:
+  using: "composite"
+  steps:
+    - name: Install Helm
+      uses: azure/setup-helm@v4
+
+    - name: Add OpenTelemetry Helm Repository
+      shell: bash
+      run: |
+        helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+        helm repo update

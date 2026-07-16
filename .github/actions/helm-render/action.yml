@@ -1,0 +1,21 @@
+name: "Helm Render"
+description: "Pulls, lints, and templates the Helm chart"
+runs:
+  using: "composite"
+  steps:
+    - name: Render Helm Chart
+      shell: bash
+      run: |
+        source platform/helm/versions.env
+        helm pull open-telemetry/opentelemetry-demo \
+          --version "$OTEL_DEMO_CHART_VERSION" \
+          --untar
+
+        helm lint opentelemetry-demo \
+          --values platform/helm/values.yaml
+
+        helm template astronomy-shop \
+          opentelemetry-demo \
+          --namespace astronomy-shop \
+          --values platform/helm/values.yaml \
+          > rendered.yaml

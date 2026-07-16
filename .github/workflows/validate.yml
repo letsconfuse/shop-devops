@@ -1,0 +1,37 @@
+---
+name: Platform Validation
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate Platform
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Helm
+        uses: ./.github/actions/setup-helm
+
+      - name: Setup Kubeconform
+        uses: ./.github/actions/setup-kubeconform
+
+      - name: Render Helm Chart
+        uses: ./.github/actions/helm-render
+
+      - name: Validate Kubernetes Manifests
+        run: |
+          kubeconform \
+            -strict \
+            -summary \
+            -ignore-missing-schemas \
+            rendered.yaml

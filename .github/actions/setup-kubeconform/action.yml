@@ -1,0 +1,11 @@
+name: "Setup Kubeconform"
+description: "Installs kubeconform for Kubernetes manifest validation"
+runs:
+  using: "composite"
+  steps:
+    - name: Install kubeconform
+      shell: bash
+      run: |
+        curl -sSL https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz \
+          | tar -xz
+        sudo mv kubeconform /usr/local/bin/
