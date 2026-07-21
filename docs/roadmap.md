@@ -100,7 +100,7 @@ Completed
 
 ## Phase 6 — GitOps
 
-Status: 🚧 In Progress
+Status: ✅ Completed
 
 Completed
 
@@ -108,25 +108,24 @@ Completed
 * Declarative Argo CD bootstrap automation (`install-argocd.sh`)
 * Native Multiple Sources configuration to separate upstream chart and local values config (`application.yaml`)
 * Makefile integration (`argocd-bootstrap`, `argocd-status`, `argocd-port-forward`, `argocd-down`)
-
-Pending
-
-* Progressive delivery
-* Rollbacks and automated self-healing validation
+* Validation and merging of Phase 4 into main
 
 ---
 
 ## Phase 7 — Observability
 
-Planned
+Status: 🚧 In Progress
 
-* Prometheus
-* Grafana
-* Loki
-* Tempo
-* Jaeger
-* OpenTelemetry
-* Alertmanager
+Completed
+
+* Integrated and enabled Alertmanager sub-chart in Prometheus configuration
+* Defined declarative Prometheus alerting rules for container target availability, pipeline throughput, and frontend SLAs
+* Authored ADR-0005 documenting the Observability and Alerting architecture
+
+Pending
+
+* Verification of alert state transitions and metrics collection
+* Advanced log aggregation (Loki) and distributed tracing (Tempo) analysis
 
 ---
 
@@ -221,11 +220,11 @@ By the end of this repository the following skills should be demonstrated.
 
 Current Branch
 
-feature/phase4-gitops
+feature/phase5-observability
 
 Current Objective
 
-Verify declarative Argo CD bootstrapping, test multiple source Application sync, configure port-forwarding targets, and submit a Pull Request.
+Verify Prometheus alerting rule configuration, test Alertmanager container rollout, and submit a Pull Request.
 
 ---
 

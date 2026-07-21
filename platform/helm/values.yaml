@@ -21,3 +21,43 @@ opentelemetry-collector:
     limits:
       cpu: 500m
       memory: 512Mi
+
+# Enable Alertmanager and configure alerting rules for our microservices.
+prometheus:
+  alertmanager:
+    enabled: true
+  serverFiles:
+    alerting_rules.yml:
+      groups:
+        - name: platform-alerts
+          rules:
+            # Alert when a Prometheus target is unreachable
+            - alert: ServiceTargetDown
+              expr: up == 0
+              for: 1m
+              labels:
+                severity: critical
+              annotations:
+                summary: "Service target is down"
+                description: "Prometheus target {{ $labels.instance }} has been unreachable for more than 1 minute."
+            
+            # Alert when OpenTelemetry Collector begins dropping spans
+            - alert: OtelCollectorDroppedSpans
+              expr: rate(otelcol_processor_dropped_spans[2m]) > 0
+              for: 1m
+              labels:
+                severity: warning
+              annotations:
+                summary: "OTel Collector is dropping telemetry spans"
+                description: "The OpenTelemetry Collector processor {{ $labels.processor }} in node {{ $labels.node }} is dropping spans."
+            
+            # Alert when HTTP 5xx responses from the Frontend service spike
+            - alert: FrontendHighHttpErrorRate
+              expr: sum(rate(http_server_duration_count{http_status=~"5.."}[5m])) / sum(rate(http_server_duration_count[5m])) * 100 > 5
+              for: 2m
+              labels:
+                severity: critical
+              annotations:
+                summary: "Frontend high HTTP 5xx error rate"
+                description: "Frontend service HTTP 5xx error rate is {{ printf \"%.2f\" $value }}% (threshold: 5%)."
+
