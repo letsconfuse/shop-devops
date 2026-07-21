@@ -1,4 +1,4 @@
-SHELL := /usr/bin/env bash
+SHELL := bash
 CLUSTER_NAME ?= astronomy-shop
 NAMESPACE ?= astronomy-shop
 RELEASE_NAME ?= astronomy-shop

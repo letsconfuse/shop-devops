@@ -112,7 +112,24 @@ Using Argo CD's Multiple Sources feature is a powerful way to reference upstream
 
 ---
 
+## 2026-07-21
+
+### Observability and Alerting Stack
+
+Completed:
+
+* Enabled Alertmanager sub-chart in Prometheus values configuration in `platform/helm/values.yaml`.
+* Defined declarative Prometheus alerting rules for availability (`ServiceTargetDown`), OTel pipeline integrity (`OtelCollectorDroppedSpans`), and application SLA (`FrontendHighHttpErrorRate`).
+* Authored ADR-0005 documenting the Observability and Alerting architecture.
+* Fixed cross-platform SHELL compatibility in the `Makefile` for Termux and standard Linux.
+
+Lesson learned:
+
+Defining alerts declaratively at the infrastructure configuration layer (Helm values) ensures that monitoring policies are versioned alongside the deployment resources, maintaining GitOps alignment for our alerting configurations.
+
+---
+
 ## Next Objective
 
-Push the `feature/phase4-gitops` branch, run validation and security checks, and merge the Pull Request.
+Push the `feature/phase5-observability` branch, verify Helm values rendering, and merge the Pull Request.
 
